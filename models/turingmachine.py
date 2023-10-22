@@ -36,12 +36,12 @@ class TuringMachineModel():
 
         We simply add 'B's at the ends of the word and some ...
         """
-        return f"...B{input}B..."
+        return f"BBB{input}BBB"
 
     @staticmethod
     def _create_printable(preparred_input: str, current_state: int, current_head_position: int) -> str:
         """
-        :preparred_input: input-word with the added '...B' on both sides
+        :preparred_input: input-word with the added 'BBB' on both sides
         
         :current_state: The state the TM currently is in.
 
@@ -49,7 +49,7 @@ class TuringMachineModel():
 
         Here we create the string, that shows the current string of the TM-tape.
         """
-        return f"{preparred_input[0:current_head_position]}[{current_state}]{preparred_input[current_head_position:]}"
+        return f"...{preparred_input[0:current_head_position]}[{current_state}]{preparred_input[current_head_position:]}..."
 
     def _calculate_step(self, current_state: int, input_red: str) -> Tuple[Union[int, str]]:
         """
@@ -66,7 +66,7 @@ class TuringMachineModel():
     @staticmethod
     def _replace_string(preparred_input: str, current_head_position: int, new_char: str):
         """
-        :preparred_input: input-word with the added '...B' on both sides
+        :preparred_input: input-word with the added 'BBB' on both sides
 
         :current_head_position: The position the head-currently is on, related to the preparred_input-str
 
@@ -79,6 +79,41 @@ class TuringMachineModel():
         preparred_input = ''.join(str_list)
 
         return preparred_input
+
+    @staticmethod
+    def _add_char_to_string(preparred_input: str, current_head_position: int, new_char: str):
+        """
+        :preparred_input: input-word with the added 'BBB' on both sides
+
+        :current_head_position: The position the head-currently is on, related to the preparred_input-str
+
+        We use this function to add (not replace) a char to a string.
+        """
+        str_list = list(preparred_input)
+        new_string_list = str_list[:current_head_position] + [new_char] + str_list[current_head_position:]
+        new_prep_input = ''.join(new_string_list)
+
+        return new_prep_input
+
+    def _modify_string_for_tape_completion(self, preparred_input: str, current_head_position: int) -> Tuple[Union[str, int]]:
+        """
+        :preparred_input: input-word with the added 'BBB' on both sides
+
+        :current_head_position: The position the head-currently is on, related to the preparred_input-str
+
+        We use this function to simulate the infinite amount of 'B's on each side of the tape.
+        """
+        if preparred_input[0:3] == 'BBB' and preparred_input[-2:] == 'BBB':
+            return preparred_input, current_head_position
+        
+        if preparred_input[0:3] != 'BBB':
+            preparred_input = self._add_char_to_string(preparred_input, 0, 'B')
+            current_head_position += 1
+
+        if preparred_input[-2:] == 'BBB':
+            preparred_input = self._add_char_to_string(preparred_input, len(preparred_input)-1, 'B')
+
+        return preparred_input, current_head_position
 
     @staticmethod
     def _calculate_new_head_position(current_head_position: int, direction: str):
@@ -105,26 +140,27 @@ class TuringMachineModel():
         if not self._check_input_match_alphabet(input):
             raise InputNotInAlphabet
 
-        # We add 'B' to the input and also set starting position of the head to 4 because we added '...B' to the left of the input
-        prepared_input = self._prepare_word_for_calculation(input)
+        # We add 'B' to the input and also set starting position of the head to 4 because we added 'BBB' to the left of the input
+        preparred_input = self._prepare_word_for_calculation(input)
         current_head_position = 4
         
         while self.current_state != self.ending_state:
-            # First we print the configuration we are currently on
-            printable = self._create_printable(prepared_input, self.current_state, current_head_position)
+            # Every step we want to check if on both ends we have 'BBB' and add one if it is missing 
+            # By doing this we simulate the infinite amount of 'B's on each side
+            preparred_input, current_head_position = self._modify_string_for_tape_completion(preparred_input, current_head_position)
+
+            # We now print the configuration we are currently on
+            printable = self._create_printable(preparred_input, self.current_state, current_head_position)
             print(printable)
 
-            input_red = prepared_input[current_head_position]
-            if input_red == '.':
-                input_red = 'B'
-
+            input_red = preparred_input[current_head_position]
             next_state, symbol_to_write, direction = self._calculate_step(self.current_state, input_red)
 
             # Now we apply all the three things to the current state, string and head-position
-            prepared_input = self._replace_string(prepared_input, current_head_position, symbol_to_write)
+            preparred_input = self._replace_string(preparred_input, current_head_position, symbol_to_write)
             self.current_state = next_state
             current_head_position = self._calculate_new_head_position(current_head_position, direction)
 
         # Wir wollen den Endzustand noch zeigen
-        printable = self._create_printable(prepared_input, self.current_state, current_head_position)
+        printable = self._create_printable(preparred_input, self.current_state, current_head_position)
         print(printable)
