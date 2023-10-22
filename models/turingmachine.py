@@ -142,7 +142,7 @@ class TuringMachineModel():
 
         # We add 'B' to the input and also set starting position of the head to 4 because we added 'BBB' to the left of the input
         preparred_input = self._prepare_word_for_calculation(input)
-        current_head_position = 4
+        current_head_position = 3
         
         while self.current_state != self.ending_state:
             # Every step we want to check if on both ends we have 'BBB' and add one if it is missing 
@@ -161,6 +161,6 @@ class TuringMachineModel():
             self.current_state = next_state
             current_head_position = self._calculate_new_head_position(current_head_position, direction)
 
-        # Wir wollen den Endzustand noch zeigen
+        # We want to show the final state of the turing-tape, that is why we print out the tape one more time
         printable = self._create_printable(preparred_input, self.current_state, current_head_position)
         print(printable)
