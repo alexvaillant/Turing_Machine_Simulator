@@ -161,6 +161,6 @@ class TuringMachineModel():
             self.current_state = next_state
             current_head_position = self._calculate_new_head_position(current_head_position, direction)
 
-        # Wir wollen den Endzustand noch zeigen
+        # We want to show the final state of the turing-tape, that is why we print out the tape one more time
         printable = self._create_printable(preparred_input, self.current_state, current_head_position)
         print(printable)
