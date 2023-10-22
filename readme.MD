@@ -50,3 +50,12 @@ Specifications to calculate something with this TM:
 filename = add_two_binaries.TM
 
 input_word = a string of '0' and '1'. The two numbers you want to add together have to be seperated by a '#'
+
+
+3. char_amount_comparison.TM is a file created by our team. It can be used to check if there are an even amount of 0s and 1s in a given input-word.
+
+Specifications to calculate something with this TM:
+
+filename = char_amount_comparison.TM
+
+input_word = a string of '0' and '1'. 
