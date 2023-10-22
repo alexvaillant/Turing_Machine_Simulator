@@ -31,6 +31,22 @@ Those files are:
 2. errors/tm_errors := Defines the error for when an input-word contains a symbol that is not within the input-alphabet.
 
 
-## 4. Regarding invert.TM
+## 4. Regarding '.TM'-files
 
-invert.TM is a file that was given to us. It can be used to test the workings of our TM-simulator.
+The '.TM'-files specify the properties of given Turing-machines.
+1. invert.TM is a file that was given to us. It can be used to test the workings of our TM-simulator. invert.TM simply defines a Turing-machine that inverts a given binary number.
+
+Specifications to calculate something with this TM:
+
+filename = invert.TM
+
+input_word = a string of '0' and '1'
+
+
+2. add_two_binaries.TM is a file created by our team. It can be used to add two binary numbers together.
+
+Specifications to calculate something with this TM:
+
+filename = add_two_binaries.TM
+
+input_word = a string of '0' and '1'. The two numbers you want to add together have to be seperated by a '#'
